@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="title.png" />
+
+    <title>BMS</title>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        background-color: #fafbfd;
+        font-family: "Cerebri Sans", sans-serif;
+      }
+
+      *,
+      ::after,
+      ::before {
+        box-sizing: border-box;
+      }
+      .cardmy {
+        height: 350px;
+        width: 600px;
+      }
+      .mess {
+        height: 10px;
+        padding: 0px 20px;
+        color: rgb(230, 88, 88);
+        font-size: 13px;
+      }
+      .form-control {
+        display: block;
+        width: 95%;
+        height: calc(1.5em + 0.75rem + 2px);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        margin: 10px 10px 10px 15px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+        width: 95%;
+        height: 20px;
+        margin: 10px 10px 10px 15px;
+        color: #edf2f9;
+      }
+      .form-label-group > input,
+      .form-label-group > label {
+        height: 3.125rem;
+        padding: 0.75rem;
+      }
+      .titles {
+        width: 100%;
+        border-bottom: 1px #e3ebf6 solid;
+
+        text-align: center;
+        line-height: 30px;
+      }
+      .card {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+
+        box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
+
+        border: 1px solid #edf2f9;
+        border-radius: 0.5rem;
+      }
+    </style>
+
+    <script>
+      function ajax(options) {
+        var xhr =
+          new XMLHttpRequest() || new ActiveXObject("Microsoft,XMLHTTP");
+        var str = "";
+        for (var key in options.data) {
+          str += "&" + key + "=" + options.data[key];
+        }
+        str = str.slice(1);
+        if (options.type == "get") {
+          var url = options.url + "?" + str;
+          xhr.open("get", url);
+          xhr.send();
+        } else if (options.type == "post") {
+          xhr.open("post", options.url);
+          xhr.setRequestHeader(
+            "content-type",
+            "application/x-www-form-urlencoded"
+          );
+          xhr.send(str);
+        }
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            var d = xhr.responseText;
+            options.success && options.success(d);
+          } else if (xhr.status != 200) {
+            options.error && options.error(xhr.status);
+          }
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div class="card" style="height: 350px; width: 600px; margin: 150px auto;">
+      <div class="titles">
+        <h2>BMS Operator</h2>
+        <!-- BMS Background management system -->
+      </div>
+      <br />
+      <div class="form-label-group">
+        <input
+          type="input"
+          class="form-control UserName"
+          placeholder="UserName"
+          onchange="kes()"
+        />
+      </div>
+      <div class="form-label-group">
+        <input
+          type="password"
+          class="form-control Password"
+          placeholder="Password"
+          onchange="kes()"
+        />
+        <!-- v-model="password"
+              @keyup="kes" -->
+      </div>
+      <div class="mess" style="display: none;">
+        <span>! 用户名或密码错误...</span>
+        <!-- v-show="isEn" -->
+      </div>
+
+      <div class="form-label-group">
+        <input
+          type="button"
+          class="form-control btn-primary"
+          value="Sign in"
+          onclick="submitForm()"
+        />
+      </div>
+    </div>
+
+    <script>
+      function kes() {
+        document.querySelector(".mess").style.display = "none";
+      }
+      function submitForm() {
+        //console.log(this.$store.state.systemmodule.systems.isSCUUsed);
+        let username = document.querySelector(".UserName").value;
+        let password = document.querySelector(".Password").value;
+        ajax({
+          type: "post",
+          url: "login",
+          data: { username, password },
+          success: function(data) {
+            console.log(data);
+            if (data == "logintrue") {
+              window.location.href = "./index.html";
+            } else {
+              //this.$message.warning("用户名或密码错误");
+              document.querySelector(".mess").style.display = "block";
+            }
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
